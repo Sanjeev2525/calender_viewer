@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Calendar - Connecting...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(99, 102, 241, 0.2);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
+                  0 0 50px rgba(99, 102, 241, 0.1);
+      transform: translateY(0);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo-container {
+      margin-bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      position: relative;
+    }
+
+    .logo-icon {
+      font-size: 32px;
+      color: var(--primary);
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .status-badge.loading {
+      color: var(--primary);
+      border-color: rgba(99, 102, 241, 0.3);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .status-badge.success {
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .status-badge.error {
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.05);
+    }
+
+    /* Spinner loader */
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(99, 102, 241, 0.1);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      margin: 0 auto 30px auto;
+      animation: spin 1s infinite linear;
+    }
+
+    /* Success Checkmark animation */
+    .checkmark-wrapper {
+      display: none;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px auto;
+      color: var(--success);
+      font-size: 28px;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      margin-top: 12px;
+      display: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="card">
+    <div class="logo-container">
+      <span class="logo-icon">📅</span>
+    </div>
+
+    <div class="status-badge loading" id="badge">
+      <span id="badge-dot">⏳</span> <span id="badge-text">Preparing Connection</span>
+    </div>
+
+    <h1 id="title">Connecting Focus Calendar</h1>
+    <p id="description">We are securing your connection. If your browser asks for permission to open Focus Calendar, please allow it.</p>
+
+    <div class="spinner" id="loader"></div>
+    <div class="checkmark-wrapper" id="success-icon">✓</div>
+
+    <button class="btn btn-primary" id="action-btn" onclick="triggerRedirect()">Open Focus Calendar</button>
+    <button class="btn btn-secondary" id="retry-btn" onclick="retryAuth()">Retry Login</button>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const error = urlParams.get('error');
+
+    const badge = document.getElementById('badge');
+    const badgeText = document.getElementById('badge-text');
+    const badgeDot = document.getElementById('badge-dot');
+    const title = document.getElementById('title');
+    const description = document.getElementById('description');
+    const loader = document.getElementById('loader');
+    const successIcon = document.getElementById('success-icon');
+    const actionBtn = document.getElementById('action-btn');
+    const retryBtn = document.getElementById('retry-btn');
+
+    let redirectUri = '';
+
+    if (error) {
+      // Error State
+      badge.className = 'status-badge error';
+      badgeDot.innerText = '✕';
+      badgeText.innerText = 'Connection Failed';
+      title.innerText = 'Authentication Failed';
+      description.innerText = `An error occurred during authentication: ${decodeURIComponent(error)}. Please close this window and try again inside the app.`;
+      loader.style.display = 'none';
+      actionBtn.style.display = 'none';
+      retryBtn.style.display = 'block';
+    } else if (code) {
+      // Valid Code State
+      redirectUri = `myreminderapp://auth/callback?code=${code}`;
+      badge.className = 'status-badge success';
+      badgeDot.innerText = '✓';
+      badgeText.innerText = 'Authorization Received';
+      title.innerText = 'Success! Ready to Connect';
+      description.innerText = 'Your Google authorization was successful. Click the button below to return to Focus Calendar and sync your events.';
+      
+      loader.style.display = 'none';
+      successIcon.style.display = 'flex';
+      
+      // Auto redirect
+      triggerRedirect();
+    } else {
+      // No Code or Error
+      badge.className = 'status-badge error';
+      badgeDot.innerText = '⚠️';
+      badgeText.innerText = 'Invalid Callback';
+      title.innerText = 'Missing Credentials';
+      description.innerText = 'No authentication code or error was found in the URL. Please launch the login flow from within your desktop application.';
+      loader.style.display = 'none';
+      actionBtn.style.display = 'none';
+    }
+
+    function triggerRedirect() {
+      if (redirectUri) {
+        window.location.href = redirectUri;
+      }
+    }
+
+    function retryAuth() {
+      window.close();
+    }
+  </script>
+</body>
+</html>
